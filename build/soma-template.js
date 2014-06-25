@@ -1434,7 +1434,7 @@
 	var ready;
 	if (typeof document === 'object') {
 		// https://github.com/ded/domready
-		var ready=function(){function l(b){for(k=1;b=a.shift();)b()}var b,a=[],c=!1,d=document,e=d.documentElement,f=e.doScroll,g="DOMContentLoaded",h="addEventListener",i="onreadystatechange",j="readyState",k=/^loade|c/.test(d[j]);return d[h]&&d[h](g,b=function(){d.removeEventListener(g,b,c),l()},c),f&&d.attachEvent(i,b=function(){/^c/.test(d[j])&&(d.detachEvent(i,b),l())}),f?function(b){self!=top?k?b():a.push(b):function(){try{e.doScroll("left")}catch(a){return setTimeout(function(){ready(b)},50)}b()}()}:function(b){k?b():a.push(b)}}();
+		var ready=function (name, definition){if(typeof module!='undefined')module.exports=definition();else if(typeof define=='function'&&typeof define.amd=='object')define(definition);else this[name]=definition();}('domready',function(){var fns=[],listener,doc=document,domContentLoaded='DOMContentLoaded',loaded=/^loaded|^i|^c/.test(doc.readyState);if(!loaded)doc.addEventListener(domContentLoaded,listener=function(){doc.removeEventListener(domContentLoaded,listener);loaded=1;while(listener=fns.shift()) listener();});return function(fn){loaded?fn():fns.push(fn);};});
 		if (settings.autocreate) {
 			var parse = function(element) {
 				var child = !element ? document.body : element.firstChild;
