@@ -3,7 +3,11 @@
 	// http://dean.edwards.name/weblog/2005/10/add-event/
 	function addEvent(element, type, handler) {
 		if (element.addEventListener) {
-			element.addEventListener(type, handler, false);
+			if (window.jQuery || window.$chocolatechip) {
+				$(element).on(type, handler);
+			} else {
+				element.addEventListener(type, handler, false);
+			}
 		} else {
 			// assign each event handler a unique ID
 			if (!handler.$$guid) {
