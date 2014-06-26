@@ -3,7 +3,7 @@
 	// http://dean.edwards.name/weblog/2005/10/add-event/
 	function addEvent(element, type, handler) {
 		if (element.addEventListener) {
-			if (window && (window.jQuery || window.$chocolatechip)) {
+			if (window && (window.jQuery || window.$chocolatechipjs)) {
 				$(element).on(type, handler);
 			} else {
 				element.addEventListener(type, handler, false);
