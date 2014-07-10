@@ -66,6 +66,9 @@
 	settings.eventsPrefix = 'data-';
 	var eventsString = 'click dblclick mousedown mouseup mouseover mouseout mousemove mouseenter mouseleave keydown keyup focus blur change select selectstart scroll copy cut paste mousewheel keypress error contextmenu input textinput drag dragenter dragleave dragover dragend dragstart dragover drop load submit reset search resize beforepaste beforecut beforecopy';
 	eventsString += ' touchstart touchend touchmove touchenter touchleave touchcancel gesturestart gesturechange gestureend';
+	if ($ && $.eventStart !== undefined) {
+		eventsString += ' tap singletap doubletap longtap swipe swipeleft swiperight swipeup swipedown';
+	}
 	var eventsArray = eventsString.split(' ');
 	var i = -1, l = eventsArray.length;
 	while(++i < l) {
@@ -589,8 +592,7 @@
 			for (var i = 0, l1 = data.length, l2 = node.childrenRepeater.length, l = l1 > l2 ? l1 : l2; i < l; i++) {
 				if (i < l1) {
 					previousElement = createRepeaterChild(node, i, data[i], vars.index, i, previousElement);
-				}
-				else {
+				} else {
 					node.parent.element.removeChild(node.childrenRepeater[i].element);
 					node.childrenRepeater[i].dispose();
 				}
@@ -598,8 +600,7 @@
 			if (node.childrenRepeater.length > data.length) {
 				node.childrenRepeater.length = data.length;
 			}
-		}
-		else {
+		} else {
 			// process object
 			var count = -1;
 			for (var o in data) {
@@ -1294,7 +1295,11 @@
 	// http://dean.edwards.name/weblog/2005/10/add-event/
 	function addEvent(element, type, handler) {
 		if (element.addEventListener) {
-			element.addEventListener(type, handler, false);
+			if (window && (window.jQuery || window.$chocolatechipjs)) {
+				$(element).on(type, handler);
+			} else {
+				element.addEventListener(type, handler, false);
+			}
 		} else {
 			// assign each event handler a unique ID
 			if (!handler.$$guid) {
@@ -1434,7 +1439,7 @@
 	var ready;
 	if (typeof document === 'object') {
 		// https://github.com/ded/domready
-		var ready=function (name, definition){if(typeof module!='undefined')module.exports=definition();else if(typeof define=='function'&&typeof define.amd=='object')define(definition);else this[name]=definition();}('domready',function(){var fns=[],listener,doc=document,domContentLoaded='DOMContentLoaded',loaded=/^loaded|^i|^c/.test(doc.readyState);if(!loaded)doc.addEventListener(domContentLoaded,listener=function(){doc.removeEventListener(domContentLoaded,listener);loaded=1;while(listener=fns.shift()) listener();});return function(fn){loaded?fn():fns.push(fn);};});
+		var ready=function(){function l(b){for(k=1;b=a.shift();) b();}var b,a=[],c=!1,d=document,e=d.documentElement,f=e.doScroll,g="DOMContentLoaded",h="addEventListener",i="onreadystatechange",j="readyState",k=/^loade|c/.test(d[j]);return d[h]&&d[h](g,b=function(){d.removeEventListener(g,b,c),l();},c),f&&d.attachEvent(i,b=function(){/^c/.test(d[j])&&(d.detachEvent(i,b),l());}),f?function(b){self!=top?k?b():a.push(b):function(){try{e.doScroll("left");}catch(a){return setTimeout(function(){ready(b);},50);}b();}();}:function (b){k?b():a.push(b);};}();
 		if (settings.autocreate) {
 			var parse = function(element) {
 				var child = !element ? document.body : element.firstChild;
